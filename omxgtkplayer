@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# OMXPlayer wrapper script. 
+#
+# Author: Sergio Conde <skgsergio@gmail.com>
+# License: GPLv2
+#
+# Modified by Ralph Glass 2013 (stripped all depth and refresh related workarounds)
+#
+
+OMXPLAYER_BIN="/usr/bin/omxplayer.bin"
+OMXPLAYER_LIBS="/opt/vc/lib:/usr/lib/omxplayer"
+
+LD_LIBRARY_PATH=$OMXPLAYER_LIBS:$LD_LIBRARY_PATH $OMXPLAYER_BIN "$@"; true
+
+GREP=`which grep`
+if [ ! -z $GREP ]; then
+    echo "$@" | $GREP -E "\.(mp3|wav|wma|cda|ogg|ogm|aac|ac3|flac)( |$)" > /dev/null 2>&1
+    if [ "$?" == "0" ]; then
+        exit 0
+    fi
+fi
+
