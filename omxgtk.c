@@ -19,11 +19,13 @@
   Copyright 2013 Ralph Glass                                        */ 
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #include <sys/time.h>
 #include <stdlib.h>
 
 struct timeval t_start, t_end;
 static int playing = 0;
+static gboolean fullscreen = FALSE;
 
 static void quit_omxplayer()
 {
@@ -37,7 +39,6 @@ static gint omxplayer(GtkWidget* window, char* arg)
         gdk_window_flush(window->window);
         sleep(1);
         int seconds = t_end.tv_sec - t_start.tv_sec;
-
         playing = 1;
         gint x,y,w,h,d;
         gint xpos, ypos;
@@ -45,22 +46,23 @@ static gint omxplayer(GtkWidget* window, char* arg)
         gdk_window_set_keep_above(window->window, TRUE);
         gdk_window_get_geometry(gdkwin ,&x ,&y ,&w ,&h, &d);
         gdk_window_get_position(window->window,&xpos,&ypos);
-        //w = gdk_window_get_width(window->window);
-        //h = gdk_window_get_height(window->window);
         gchar* winstring = g_strdup_printf("%i %i %i %i", xpos,ypos,xpos+w,ypos+h);
         int pos = seconds - 6;
         if (pos < 0)
                 pos = 0;
         gchar* posstring = g_strdup_printf("%i", pos);
-        
+        char* win_option = "--win";
+        if (fullscreen == TRUE){
+                win_option = NULL;};
+
         int r = 0;
         r = fork();
         if (r > 0) {
                  execl("/usr/local/bin/omxpipe.sh","omxpipe.sh", 
-                                                       "--win",winstring,
-                                                       "--pos",posstring,
-                                                        arg,
-                                                        NULL);  
+                                                   "--pos",posstring,
+                                                   arg,
+                                                   win_option,winstring,
+                                                   NULL);  
                 return TRUE;
         } else {
                 system("echo -n p > /tmp/omxgtk_cmd");
@@ -80,8 +82,8 @@ static void destroy(GtkWidget* widget, GtkWidget* window)
 static gint configure_event(GtkWidget* window, GdkEvent* event, gchar* arg)
 {
         static int counter = 0;
+        g_print("event fired!\n");
         if ( counter != 0 ){
-                //g_print("configure_event fired\n");
                 if (playing == 1)
                         quit_omxplayer();
                 if (playing == 0){
@@ -98,9 +100,39 @@ static void clicked(GtkWidget* widget, GtkWidget* window)
         system("echo -n p > /tmp/omxgtk_cmd");
 }
 
-static void event_fired(GtkWidget* w, GdkDragContext* c, gpointer data)
+static void omxgtk_key_pressed(GtkWidget* widget, GdkEventKey* event, char* arg)
 {
-        g_print("event fired!\n");
+        if (event->type == GDK_KEY_PRESS){
+
+                switch ( event -> keyval )
+                {
+                case GDK_f:
+                        fullscreen = !fullscreen;
+                        configure_event(widget, NULL, arg);
+                        break;
+                case GDK_p:
+                        system("echo -n p > /tmp/omxgtk_cmd");
+                        break;
+                case GDK_KEY_space:
+                        system("echo -n p > /tmp/omxgtk_cmd");
+                        break;
+                case GDK_KEY_plus:
+                        system("echo -n + > /tmp/omxgtk_cmd");
+                        break;
+                case GDK_KEY_minus:
+                        system("echo -n - > /tmp/omxgtk_cmd");
+                        break;
+                case GDK_Right:
+                        system("echo -n $'\x1b\x5b\x43' > /tmp/omxgtk_cmd");
+                        break;
+                case GDK_Left:
+                        system("echo -n $'\x1b\x5b\x44' > /tmp/omxgtk_cmd");
+                        break;
+                case GDK_q:
+                        destroy(widget,NULL); 
+                        break;
+                }
+        }
 }
 
 static void create_OmxView(char* arg)
@@ -116,7 +148,7 @@ static void create_OmxView(char* arg)
         g_signal_connect(window, "delete-event", G_CALLBACK(destroy), window);
         g_signal_connect(button, "clicked", G_CALLBACK(clicked), window);
         g_signal_connect(window, "configure-event", G_CALLBACK(configure_event), arg);
-        g_signal_connect(window, "drag-begin", G_CALLBACK(event_fired), NULL);
+        g_signal_connect(window, "key-press-event", G_CALLBACK(omxgtk_key_pressed), arg);
         gettimeofday(&t_start, NULL);
         return;
 }
