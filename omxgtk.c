@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License 
   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
-  Copyright 2013 Ralph Glass                                         */ 
+  Copyright 2013 Ralph Glass                                        */ 
 
 #include <gtk/gtk.h>
 #include <sys/time.h>
@@ -30,7 +30,6 @@ static void quit_omxplayer()
         playing = 0;
         gettimeofday(&t_end, NULL);
         system("echo -n q > /tmp/omxgtk_cmd");
-        system("killall omxplayer.bin");
 }
 
 static gint omxplayer(GtkWidget* window, char* arg)
@@ -57,7 +56,7 @@ static gint omxplayer(GtkWidget* window, char* arg)
         int r = 0;
         r = fork();
         if (r > 0) {
-                 execl("/home/ralph/omxgtk/omxpipe.sh","omxpipe.sh", 
+                 execl("/usr/local/bin/omxpipe.sh","omxpipe.sh", 
                                                        "--win",winstring,
                                                        "--pos",posstring,
                                                         arg,
@@ -74,6 +73,7 @@ static void destroy(GtkWidget* widget, GtkWidget* window)
 {
         system("rm -f /tmp/omxgtk_cmd");
         quit_omxplayer();
+        system("killall omxplayer.bin");
         gtk_main_quit();
 }
 
