@@ -5,4 +5,5 @@ sudo make install
 
 or install debian package with command:
 
-sudo dpkg -i 
+sudo dpkg -i
+ 
