@@ -256,6 +256,10 @@ static char* omxgtk_init(int argc, char* argv[])
 {
         /* option --window only usefull if omxplayer version supports --win */
         /* fixfullscreen default for now (--win avail for testing only)     */
+        if (argv[1] == NULL){
+               printf("Usage: omxgtk [FILENAME]\n");
+               exit(0);
+        }
         char* result = NULL;
         omxgtk.fixfullscreen = TRUE;
         for (int i = 1; i < argc; i++){

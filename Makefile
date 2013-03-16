@@ -19,8 +19,7 @@ clean:
 	rm ./omxgtk
 
 tar: omxgtk
-	cd .. && tar -czvf omxgtk_0.1.orig.tar.gz ./omxgtk/Makefile ./omxgtk/omxgtk.c ./omxgtk/omxpipe.sh ./omxgtk/omxpipeonce.sh ./omxgtk/omxgtkplayer ./omxgtk/omxgtk.1.gz
-
+	cd .. && tar -czvf omxgtk_0.1.orig.tar.gz ./omxgtk/Makefile ./omxgtk/omxgtk.c ./omxgtk/omxpipe.sh ./omxgtk/omxpipeonce.sh ./omxgtk/omxgtkplayer ./omxgtk/omxgtk.1.gz ./omxgtk/COPYING ./omxgtk/INSTALL
 edit: omxgtk.c
 	vim omxgtk.c
 
