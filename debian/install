@@ -1,0 +1,5 @@
+omxgtk usr/bin
+omxgtkplayer usr/bin
+omxgtk.1.gz usr/share/man/man1
+omxpipe.sh usr/local/bin
+omxpipeonce.sh usr/local/bin

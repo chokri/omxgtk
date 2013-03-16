@@ -1,0 +1,8 @@
+Install Instructions:
+
+make
+sudo make install
+
+or install debian package with command:
+
+sudo dpkg -i 

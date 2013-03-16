@@ -1,0 +1,13 @@
+Source: omxgtk
+Maintainer: Ralph Glass <ralph.glass@t-online.de>
+Section: video
+Priority: optional
+Standards-Version: 3.9.4
+Build-Depends: debhelper (>= 8)
+
+Package: omxgtk
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, x11-xserver-utils, xterm
+Description: slim gtk player for omxplayer
+	forward gtk key controls to omxplayer in fullscreen mode
+	support for window available with omxplayer development version
