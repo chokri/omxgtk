@@ -1,5 +1,5 @@
 omxgtk: omxgtk.c
-	gcc -O omxgtk.c -o omxgtk `pkg-config --cflags gtk+-2.0 --libs gtk+-2.0` -std=c99
+	gcc -O2 omxgtk.c -o omxgtk `pkg-config --cflags gtk+-2.0 --libs gtk+-2.0` -std=c99
 
 install: omxgtk
 	sudo install -g video omxgtk /usr/bin

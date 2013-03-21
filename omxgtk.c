@@ -18,6 +18,8 @@
 
   Copyright 2013 Ralph Glass                                        */ 
 
+#define _BSD_SOURCE
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <sys/time.h>
@@ -48,7 +50,7 @@ static void quit_omxplayer()
 static gint omxplayer(GtkWidget* window, char* arg)
 {
         system("killall omxplayer.bin");
-        sleep(1);
+        usleep(100);
         omxgtk.playing = 1;
         int seconds = t_end.tv_sec - t_start.tv_sec;
         guint x,y,w,h,d;
@@ -83,7 +85,6 @@ static gint omxplayer(GtkWidget* window, char* arg)
                  execl(scriptpath, script, "--pos", posstring,
                                             arg,
                                             win_option,winstring,
-                                           "> /tmp/omxgtk.log",
                                             NULL);  
                 return TRUE;
         } else {
@@ -253,7 +254,7 @@ static void create_OmxView(char* arg)
 
 static void init_fifo()
 {
-        system("rm -f /tmp/omxgtk_cmd");
+        system("test ! -f /tmp/omxgtk_cmd || rm /tmp/omxgtk_cmd");
         system("mkfifo /tmp/omxgtk_cmd");
 }
 
@@ -280,10 +281,10 @@ static char* omxgtk_init(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+        init_fifo();
         char* media;
         gtk_init(&argc, &argv);
         media = omxgtk_init(argc, argv);
-        init_fifo();
         create_OmxView(media);
         gtk_main();
         return 0;
