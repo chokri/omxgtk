@@ -48,6 +48,7 @@ static void quit_omxplayer()
 static gint omxplayer(GtkWidget* window, char* arg)
 {
         system("killall omxplayer.bin");
+        sleep(1);
         omxgtk.playing = 1;
         int seconds = t_end.tv_sec - t_start.tv_sec;
         guint x,y,w,h,d;
@@ -226,7 +227,7 @@ static void create_OmxView(char* arg)
 
         GtkWidget* button;
         button = gtk_button_new_with_label("");
-        gtk_window_set_default_size(GTK_WINDOW(window), 960,600 );
+        gtk_window_set_default_size(GTK_WINDOW(window), 854,520 );
 
         if (omxgtk.fixfullscreen == FALSE){
                 gtk_container_add(GTK_CONTAINER(window), vbox);
